@@ -1,5 +1,22 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Bookmark Organizer</title>
+        <link rel="stylesheet" href="popup.css">
+    </head>
     <body>
-        <h1>Hello World!</h1>
+        <div class="container">
+            <h2>Bookmark Organizer</h2>
+            <div>
+            <input type="text" id="folderName" placeholder="Enter folder name">
+            <button onclick="createFolder()">Create Folder</button>
+            </div>
+            <ul id="bookmarkList">
+            <!-- Bookmark list will be populated here -->
+            </ul>
+        </div>
+        <script src="popup.js"></script>
     </body>
 </html>
