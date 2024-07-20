@@ -32,10 +32,21 @@ function displayBookmarks(bookmarks) {
 
     bookmarks.forEach(function (bookmark) {
         var li = document.createElement('li');
-        li.textContent = bookmark.title;
+
+        var titleSpan = document.createElement('span');
+        titleSpan.textContent = bookmark.title;
+        titleSpan.className = 'title';
+
+        li.appendChild(titleSpan);
 
         if (bookmark.children) {
-            li.style.fontWeight = 'bold';
+            li.className = 'folder';
+            var deleteFolderButton = document.createElement('button');
+            deleteFolderButton.textContent = 'Delete Folder';
+            deleteFolderButton.addEventListener('click', function () {
+                openDeleteFolderModal(bookmark.id);
+            });
+            li.appendChild(deleteFolderButton);
         } else {
             var moveButton = document.createElement('button');
             moveButton.textContent = 'Move';
@@ -46,7 +57,7 @@ function displayBookmarks(bookmarks) {
             var deleteButton = document.createElement('button');
             deleteButton.textContent = 'Delete';
             deleteButton.addEventListener('click', function () {
-                openDeleteFolderModal(bookmark.id);
+                deleteBookmark(bookmark.id);
             });
 
             li.appendChild(moveButton);
@@ -167,7 +178,7 @@ function deleteFolder(folderId) {
         var promises = [];
         children.forEach(function (child) {
             promises.push(new Promise(function (resolve, reject) {
-                chrome.bookmarks.move(child.id, { 'parentId': child.parentId }, function () {
+                chrome.bookmarks.move(child.id, { 'parentId': '1' }, function () { // '1' is the ID of the "Bookmarks Bar"
                     console.log('Moved bookmark:', child.id);
                     resolve();
                 });
@@ -187,6 +198,14 @@ function deleteFolder(folderId) {
 function moveBookmark(bookmarkId, folderId) {
     chrome.bookmarks.move(bookmarkId, { 'parentId': folderId }, function (movedBookmark) {
         console.log('Bookmark moved:', movedBookmark);
+        loadBookmarks();
+    });
+}
+
+// Function to delete a bookmark
+function deleteBookmark(bookmarkId) {
+    chrome.bookmarks.remove(bookmarkId, function () {
+        console.log('Bookmark deleted:', bookmarkId);
         loadBookmarks();
     });
 }
